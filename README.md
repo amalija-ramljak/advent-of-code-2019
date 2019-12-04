@@ -1,4 +1,4 @@
-# advent-of-code-2019
+# Advent of Code 2019
 
 My inputs might be put up at the end of AoC when I reorganise everything
 
