@@ -71,36 +71,15 @@
 # # before running, replace pos 1 with val 12, and pos 2 with val 2
 
 from copy import deepcopy
+from opcode import run
 
-def run(value1, value2, program):
-    program[1] = value1
-    program[2] = value2
+available_opcodes = {1, 2}
 
-    position = 0
-    length = len(program)
-    while True:
-        opcode = program[position]
-        if opcode == 99:
-            print("Halted!")
-            return program[0]
-        elif opcode == 1 or opcode == 2:
-            # code[pos] gives the location, so code[code[pos]] gives value
-            first = program[program[position+1]%length]
-            second = program[program[position+2]%length]
-            # save res in res_loc
-            result_loc = program[position+3]%length
-            program[result_loc] = first+second if opcode == 1 else first*second
-            position += 4
-            position %= length
-        else:
-            print("Error")
-            break
+code = input("Enter program:").split(",")
+for i, n in enumerate(code):
+    code[i] = int(n)
 
-code = input().split(",")
-for i, num in enumerate(code):
-    code[i] = int(num)
-
-print("Value left at 0:", run(12, 2, deepcopy(code)))
+print("Value left at 0:", run(deepcopy(code), available_opcodes, extra_values=[(1, 12), (2, 2)])[0])
 
 # shortened task 2
 # intcode - initial state of memory, should be init to programs values
@@ -110,7 +89,7 @@ print("Value left at 0:", run(12, 2, deepcopy(code)))
 brk = False
 for first in reversed(range(100)):
     for second in reversed(range(100)):
-        if run(first, second, deepcopy(code)) == 19690720:
+        if run(deepcopy(code), available_opcodes, extra_values=[(1, first), (2, second)], halt_print=False)[0] == 19690720:
             print("The winning pair:", first, "and", second)
             print("Result:", 100*first + second)
             brk = True
